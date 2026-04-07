@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>駕馭工程：當 AI 開始自己上工,人類怎麼握韁繩?</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;700;900&family=Bricolage+Grotesque:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f4f1ea;
+  --bg-warm: #ede8dc;
+  --ink: #1a1814;
+  --paper: #ffffff;
+  --accent: #d4452a;
+  --accent-2: #1e3a5f;
+  --gold: #c9a961;
+  --muted: #6b6259;
+  --soft: #faf7ef;
+  --line: #1a1814;
+  --grid: rgba(26,24,20,0.06);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Noto Serif TC', serif;
+  line-height: 1.85;
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.wrapper {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.masthead {
+  border-bottom: 4px double var(--ink);
+  padding: 28px 0 16px;
+}
+.masthead-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.masthead-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: 0.05em;
+  text-align: center;
+  margin-top: 8px;
+}
+
+.hero {
+  padding: 80px 0 60px;
+  border-bottom: 1px solid var(--ink);
+}
+.hero-kicker {
+  display: inline-block;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: var(--accent);
+  color: var(--paper);
+  padding: 6px 14px;
+  margin-bottom: 32px;
+  font-weight: 600;
+}
+.hero h1 {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 900;
+  font-size: clamp(40px, 6vw, 72px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  margin-bottom: 28px;
+}
+.hero h1 .accent { color: var(--accent); font-style: italic; }
+.hero h1 .underline { background-image: linear-gradient(transparent 75%, var(--gold) 75%); }
+.hero-lede {
+  font-size: 20px;
+  line-height: 1.7;
+  color: var(--muted);
+  max-width: 680px;
+  border-left: 3px solid var(--accent);
+  padding-left: 24px;
+  margin-top: 40px;
+}
+.hero-meta {
+  display: flex;
+  gap: 32px;
+  margin-top: 48px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.hero-meta span strong { color: var(--ink); display: block; font-size: 14px; margin-top: 4px; }
+
+section { padding: 80px 0; border-bottom: 1px solid rgba(26,24,20,0.15); }
+
+.section-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--accent);
+  letter-spacing: 0.15em;
+  margin-bottom: 12px;
+  display: block;
+}
+.section-title {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 900;
+  font-size: clamp(32px, 4.5vw, 50px);
+  line-height: 1.15;
+  margin-bottom: 36px;
+  max-width: 780px;
+}
+.section-title em { font-style: italic; color: var(--accent); font-weight: 700; }
+
+p { font-size: 17px; margin-bottom: 22px; }
+p.lead { font-size: 19px; }
+
+h3.sub {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 800;
+  font-size: 24px;
+  margin: 48px 0 18px;
+  padding-left: 18px;
+  border-left: 4px solid var(--accent);
+}
+h4.mini {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  margin: 28px 0 10px;
+  color: var(--accent-2);
+}
+
+.dropcap::first-letter {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 76px;
+  font-weight: 800;
+  float: left;
+  line-height: 0.85;
+  margin: 8px 12px -4px 0;
+  color: var(--accent);
+}
+
+.beginner-box {
+  background: var(--soft);
+  border: 1px solid var(--gold);
+  border-left: 6px solid var(--gold);
+  padding: 28px 28px 24px;
+  margin: 36px 0;
+  position: relative;
+}
+.beginner-box::before {
+  content: '新手解碼';
+  position: absolute;
+  top: -12px;
+  left: 16px;
+  background: var(--gold);
+  color: var(--ink);
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  letter-spacing: 0.1em;
+}
+.beginner-box p { font-size: 16px; margin-bottom: 12px; line-height: 1.75; }
+.beginner-box p:last-child { margin-bottom: 0; }
+
+.advanced-box {
+  background: var(--ink);
+  color: var(--bg);
+  padding: 32px;
+  margin: 36px 0;
+  position: relative;
+  border-left: 6px solid var(--accent);
+}
+.advanced-box::before {
+  content: '進階洞察';
+  position: absolute;
+  top: -12px;
+  left: 16px;
+  background: var(--accent);
+  color: var(--paper);
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  letter-spacing: 0.1em;
+}
+.advanced-box p { font-size: 16px; line-height: 1.75; color: rgba(244,241,234,0.92); margin-bottom: 0; }
+.advanced-box strong { color: var(--gold); }
+
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 36px 0;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+}
+.compare > div { padding: 28px; }
+.compare > div:first-child { border-right: 1px solid var(--ink); background: #fdf3f0; }
+.compare h5 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 14px;
+  color: var(--muted);
+}
+.compare strong {
+  display: block;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 20px;
+  margin-bottom: 12px;
+  color: var(--ink);
+}
+.compare p { font-size: 15px; line-height: 1.7; margin-bottom: 0; }
+
+.evolution {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 48px 0;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+}
+.evo-stage {
+  padding: 32px 24px;
+  border-right: 1px solid var(--ink);
+}
+.evo-stage:last-child { border-right: none; }
+.evo-stage:nth-child(3) { background: #fef6f3; }
+.evo-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 12px;
+}
+.evo-name {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+.evo-zh { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+.evo-q {
+  font-size: 14px;
+  line-height: 1.65;
+  font-style: italic;
+  border-top: 1px dashed var(--ink);
+  padding-top: 14px;
+  margin-bottom: 12px;
+}
+.evo-bottom {
+  font-size: 13px;
+  color: var(--muted);
+  border-top: 1px dashed var(--ink);
+  padding-top: 12px;
+}
+
+.pullquote {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 28px;
+  line-height: 1.4;
+  font-weight: 700;
+  margin: 56px 0;
+  padding: 36px 0 32px 36px;
+  border-left: 6px solid var(--accent);
+  position: relative;
+}
+.pullquote::before {
+  content: '"';
+  position: absolute;
+  top: -20px; left: 8px;
+  font-size: 120px;
+  color: var(--gold);
+  font-family: Georgia, serif;
+  line-height: 1;
+  opacity: 0.5;
+}
+.pullquote cite {
+  display: block;
+  font-size: 13px;
+  font-style: normal;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+  margin-top: 16px;
+}
+
+.layers { margin: 48px 0; }
+.layer {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 32px;
+  padding: 36px 0;
+  border-top: 1px solid var(--ink);
+  align-items: start;
+}
+.layer:last-child { border-bottom: 1px solid var(--ink); }
+.layer-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 56px;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+}
+.layer-name {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 800;
+  font-size: 24px;
+  margin-bottom: 6px;
+}
+.layer-name .en {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 400;
+  margin-left: 10px;
+  letter-spacing: 0.05em;
+}
+.layer-desc { font-size: 16px; margin-bottom: 14px; line-height: 1.75; }
+.layer-example {
+  background: var(--bg-warm);
+  padding: 16px 20px;
+  font-size: 14px;
+  line-height: 1.7;
+  border-left: 3px solid var(--gold);
+  margin-top: 12px;
+}
+.layer-example b {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  color: var(--accent-2);
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.case-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin: 48px 0;
+}
+.case {
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  padding: 32px;
+}
+.case.anthropic { border-top: 6px solid var(--accent-2); }
+.case.openai { border-top: 6px solid var(--gold); }
+.case-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.case h3 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 800;
+  font-size: 26px;
+  margin-bottom: 18px;
+}
+.case h4 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  margin: 22px 0 8px;
+}
+.case p { font-size: 15px; line-height: 1.75; margin-bottom: 12px; }
+
+.failures {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  margin: 40px 0;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+}
+.failure {
+  padding: 28px;
+  border-right: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+}
+.failure:nth-child(2n) { border-right: none; }
+.failure:nth-child(n+3) { border-bottom: none; }
+.failure-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  background: var(--ink);
+  color: var(--bg);
+  padding: 3px 8px;
+  display: inline-block;
+  margin-bottom: 12px;
+  letter-spacing: 0.1em;
+}
+.failure h4 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+.failure p { font-size: 14px; line-height: 1.7; margin-bottom: 10px; color: var(--ink); }
+.failure .defense {
+  font-size: 13px;
+  background: var(--bg-warm);
+  padding: 12px 14px;
+  border-left: 3px solid var(--accent);
+  margin-top: 12px;
+  line-height: 1.6;
+}
+.failure .defense b {
+  color: var(--accent);
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.bubble-section {
+  background: var(--ink);
+  color: var(--bg);
+  padding: 96px 0;
+  margin-top: 0;
+  border-top: 1px solid var(--ink);
+}
+.bubble-section .section-title { color: var(--bg); }
+.bubble-section .section-num { color: var(--gold); }
+.bubble-section p { color: rgba(244,241,234,0.88); }
+.bubble-section p.lead { color: rgba(244,241,234,0.98); }
+.bubble-vis {
+  width: 100%;
+  max-width: 540px;
+  margin: 56px auto;
+  display: block;
+}
+
+.takeaways {
+  list-style: none;
+  counter-reset: take;
+  margin: 40px 0;
+}
+.takeaways li {
+  counter-increment: take;
+  padding: 28px 0 28px 88px;
+  border-top: 1px solid rgba(26,24,20,0.2);
+  position: relative;
+  font-size: 17px;
+  line-height: 1.75;
+}
+.takeaways li:last-child { border-bottom: 1px solid rgba(26,24,20,0.2); }
+.takeaways li::before {
+  content: counter(take, decimal-leading-zero);
+  position: absolute;
+  left: 0; top: 26px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--accent);
+}
+.takeaways strong {
+  display: block;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 20px;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+
+footer {
+  padding: 56px 0;
+  border-top: 4px double var(--ink);
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+  text-align: center;
+}
+footer .sources { margin-top: 16px; font-size: 11px; text-transform: none; letter-spacing: 0.05em; line-height: 1.8; }
+
+@media (max-width: 768px) {
+  .wrapper { padding: 0 20px; }
+  .evolution { grid-template-columns: 1fr; }
+  .evo-stage { border-right: none; border-bottom: 1px solid var(--ink); }
+  .evo-stage:last-child { border-bottom: none; }
+  .case-grid { grid-template-columns: 1fr; }
+  .compare { grid-template-columns: 1fr; }
+  .compare > div:first-child { border-right: none; border-bottom: 1px solid var(--ink); }
+  .failures { grid-template-columns: 1fr; }
+  .failure { border-right: none !important; }
+  .failure:not(:last-child) { border-bottom: 1px solid var(--ink); }
+  .layer { grid-template-columns: 60px 1fr; gap: 20px; }
+  .layer-num { font-size: 40px; }
+  .pullquote { font-size: 22px; padding-left: 24px; }
+}
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+
+  <header class="masthead">
+    <div class="masthead-row">
+      <span>Vol. 04 · 2026</span>
+      <span>AI × Engineering</span>
+      <span>Deep Dive</span>
+    </div>
+    <div class="masthead-title">THE HARNESS REPORT</div>
+  </header>
+
+  <section class="hero">
+    <span class="hero-kicker">封面故事 · Cover Story</span>
+    <h1>當 AI 學會自己上工,<br>人類<span class="accent">怎麼握韁繩</span>?<br>關於 <span class="underline">駕馭工程</span> 的一切</h1>
+    <p class="hero-lede">2026 年的殘酷真相是:模型差距正在縮小,但 Agent 的成功率天差地遠。秘密既不在提示詞,也不在模型參數——而在你有沒有為這匹狂奔的野馬,套上一副真正合用的馬具。這篇文章寫給兩種人:從來沒摸過 Agent 的新手,以及已經在用、但始終卡在某個成功率天花板的老手。</p>
+    <div class="hero-meta">
+      <span>主題 / Theme<strong>駕馭工程</strong></span>
+      <span>核心來源<strong>code 秘密花園</strong></span>
+      <span>延伸對照<strong>Gary Chen</strong></span>
+      <span>閱讀時間<strong>約 18 分鐘</strong></span>
+    </div>
+  </section>
+
+  <section>
+    <span class="section-num">PART 01 — 範式轉移</span>
+    <h2 class="section-title">為什麼你的 Agent 還在<em>原地打轉</em>?</h2>
+
+    <p class="lead dropcap">先說一個真實案例。某家公司的開發團隊,用上了當下最強的大模型,改了上百版提示詞,然後一字一句細讀官方提示詞指南。他們做了能做的一切,Agent 的任務成功率卻始終卡在 70% 以下。團隊內部已經開始懷疑「是不是這個任務本身就太難了」、「是不是我們的需求超出 AI 的能力範圍」。</p>
+
+    <p>後來他們請了一位顧問進場。這位顧問做了一件出乎所有人意料的事:他完全沒有換模型,沒有重寫提示詞,甚至連 RAG 檢索的內容都沒動。他只重新設計了三件事——「任務怎麼拆解、狀態怎麼管理、失敗後怎麼恢復」。</p>
+
+    <p>結果?成功率直接從 70% 飆破 95%。</p>
+
+    <div class="beginner-box">
+      <p><b>什麼是 Agent?</b>用最白話的方式講:傳統 ChatGPT 是「你問一句,它答一句」的對話玩具;Agent 則是你給它一個目標(例如「幫我完成這份季度報告」),它會自己拆解任務、自己上網查資料、自己呼叫工具、自己驗證結果,中間不需要你一步步盯哨。它是一個能獨立工作數小時的數位員工。</p>
+      <p>而駕馭工程(Harness Engineering)——Harness 的原文意思是「馬具、韁繩」——就是讓這個數位員工不會跑偏的那一整套配備。</p>
+    </div>
+
+    <h3 class="sub">三次躍遷:從話術,到資訊,到系統</h3>
+
+    <p>要理解駕馭工程,得先理解 AI 工程的演進路徑。這不只是名詞變來變去,而是面對問題的「升維」——每一次升級,都是我們發現舊方法解不了新問題之後的被迫進化。</p>
+
+    <div class="evolution">
+      <div class="evo-stage">
+        <span class="evo-num">STAGE 01 · 2023</span>
+        <div class="evo-name">Prompt</div>
+        <div class="evo-zh">提示詞工程</div>
+        <p class="evo-q">「模型有沒有聽懂我說的話?」</p>
+        <p class="evo-bottom">早期共識:模型不是不會,是你沒說清楚。研究角色設定、風格約束、思維鏈。本質是在「塑造一個局部的概率空間」。</p>
+      </div>
+      <div class="evo-stage">
+        <span class="evo-num">STAGE 02 · 2024</span>
+        <div class="evo-name">Context</div>
+        <div class="evo-zh">上下文工程</div>
+        <p class="evo-q">「模型有沒有拿到對的資訊?」</p>
+        <p class="evo-bottom">當任務變成長鏈條(分析長文檔、結合歷史記錄),光靠話術沒用。要在對的時機把對的資訊塞進去,還要分層、按需,而不是盲目塞滿。</p>
+      </div>
+      <div class="evo-stage">
+        <span class="evo-num">STAGE 03 · 2025+</span>
+        <div class="evo-name">Harness</div>
+        <div class="evo-zh">駕馭工程</div>
+        <p class="evo-q">「模型在連續執行中能不能持續做對?」</p>
+        <p class="evo-bottom">資訊都給對了,模型還是會在漫長的步驟裡跑偏(掉錯工具、誤讀回傳)。問題從「輸入端」升維到「執行與穩定性」。</p>
+      </div>
+    </div>
+
+    <p>提示詞工程的本質,是<strong>塑造一個局部的概率空間</strong>——讓模型在你劃定的範圍內輸出。但它的天花板很明顯:它只能激發模型已有的能力,無法彌補缺失的事實。當你發現「再怎麼改提示詞,模型就是不知道你公司的內規」,你就被迫進入 Context 階段:把內規檢索進來,把對話歷史接進來,把工具回傳塞進來。</p>
+
+    <p>Context 解決了「缺資訊」的問題,但它又遇到新瓶頸:當任務變成「自動處理 50 封客訴信」這種長執行任務時,模型可能在第 12 封信突然把回信寄錯人,在第 30 封信開始重複前面的格式錯誤,在第 47 封信把工具呼叫的順序搞反。<strong>不是模型不會,是它在連續執行中失控了。</strong>這時,你需要的就不再是更多資訊,而是一整套監督機制——這就是駕馭工程。</p>
+
+    <h3 class="sub">最直觀的比喻:派新人去拜訪客戶</h3>
+
+    <p>影片裡有一個比喻特別好:想像你要派一個新進業務員去拜訪重要客戶。三個層次的工程,對應的就是三種不同的協助方式:</p>
+
+    <div class="compare">
+      <div>
+        <h5>淺層協助</h5>
+        <strong>Prompt</strong>
+        <p>交代他怎麼說話:「見面先寒暄三分鐘,然後切入方案介紹,語氣要親切但專業。」這是話術指導。</p>
+      </div>
+      <div>
+        <h5>中層協助</h5>
+        <strong>Context</strong>
+        <p>幫他準備資料:客戶背景、公司近況、歷史報價單、競爭對手分析。這是資訊武裝。</p>
+      </div>
+    </div>
+
+    <p>但真正讓新人能獨立出差不出包的,是第三層:<strong>給他一份 Checklist、要求他在關鍵節點向你回報、會後核對錄音、發現偏離立刻電話糾正。</strong>這才是駕馭工程——一整套觀測、糾偏與驗收的機制。</p>
+
+    <p>沒有這套韁繩的 Agent,就像一個聰明但沒人盯的新人:他可能會把事情做得很漂亮,也可能會在某個你沒想到的環節徹底失控。而你完全不知道哪一次會是哪一種。</p>
+
+    <div class="pullquote">
+      Agent = Model + Harness。<br>所以,Harness 就等於 Agent 減去 Model。
+      <cite>— 一線大廠工程師的極簡公式</cite>
+    </div>
+
+    <p>這個公式聽起來像廢話,但它有一個顛覆性的含義:當你拿掉模型本身——拿掉那個你以為是 Agent 全部的東西——剩下的所有零件加起來,才是真正決定 Agent 能不能上線的關鍵。模型只是引擎,駕馭工程才是讓這台車能在公路上跑的整個底盤、煞車、ABS、安全氣囊、儀表板和導航系統。</p>
+  </section>
+
+  <section>
+    <span class="section-num">PART 02 — 解剖學</span>
+    <h2 class="section-title">駕馭工程的<em>六層骨架</em></h2>
+
+    <p class="lead">把這套系統拆開來看,它其實由六個層次組成。從資訊的邊界,一路延伸到失敗後的恢復——每一層都不華麗,但少了任何一層,Agent 就會在某個節點悄悄崩塌。我會盡量用實際的例子把每一層說清楚,因為這六層之間的關係,正是區分「玩具 Demo」和「生產級系統」的關鍵。</p>
+
+    <div class="layers">
+
+      <div class="layer">
+        <div class="layer-num">01</div>
+        <div>
+          <div class="layer-name">資訊邊界與結構化組織<span class="en">Information Boundary</span></div>
+          <p class="layer-desc">讓模型在正確的「思考範圍」內運作。這層要做三件事:定義角色目標(你是誰、為誰服務)、裁剪無用資訊(別把整個資料庫都倒給它),以及把固定規則、當前任務、運行狀態分層放置——避免資訊互相污染,讓模型忘記最初的約束。</p>
+          <div class="layer-example">
+            <b>具體場景</b>
+            如果你寫一個客服 Agent,「公司退換貨政策」是固定規則(永遠不變)、「使用者目前的訂單號」是當前任務、「Agent 已經呼叫過哪些 API」是運行狀態。把這三類混在一起塞給模型,它就會搞混到底哪個是規則、哪個是當下情境,甚至開始把「上一個使用者的訂單」當成這次的任務處理。
+          </div>
+        </div>
+      </div>
+
+      <div class="layer">
+        <div class="layer-num">02</div>
+        <div>
+          <div class="layer-name">工具系統<span class="en">Tooling</span></div>
+          <p class="layer-desc">模型只有連上工具才能觸碰真實世界。但工具設計遠比想像中精細——你必須決定:給它哪些工具(太多會亂用,太少能力不足)、什麼時候該調用、回傳的龐大結果怎麼提煉後再餵回去,而不是把整包 JSON 原封不動地塞爆上下文。</p>
+          <div class="layer-example">
+            <b>具體場景</b>
+            假設工具回傳的是一份 200 頁的 PDF 文字。如果你把全部文字都塞進對話,模型的注意力會被稀釋到接近於零。正確做法是:在工具與模型之間加一層「摘要器」,先把 PDF 摘要成 30 行重點,再把這 30 行交給模型決策。這才是工具系統的設計感。
+          </div>
+        </div>
+      </div>
+
+      <div class="layer">
+        <div class="layer-num">03</div>
+        <div>
+          <div class="layer-name">執行編排<span class="en">Orchestration</span></div>
+          <p class="layer-desc">替模型規劃「行動軌道」。模型自然狀態下會「想到哪做到哪」,駕馭工程則強制它走一條既定的循環:理解目標 → 判斷現有資訊 → 執行動作 → 檢查輸出 → 修正錯誤 → 回到開頭。這個循環越穩,Agent 就越像一個有紀律的員工,而不是一個躁動的天才。</p>
+          <div class="layer-example">
+            <b>具體場景</b>
+            寫程式 Agent 如果沒有編排,可能會看到一個 bug 就直接動手改,改完跑測試發現又冒出三個新 bug,然後越改越亂。有編排的版本則會先「分析根因」、再「列出修改計畫」、然後「逐項實施」、最後「跑完整測試套件」——同樣的模型,結果天差地遠。
+          </div>
+        </div>
+      </div>
+
+      <div class="layer">
+        <div class="layer-num">04</div>
+        <div>
+          <div class="layer-name">記憶與狀態管理<span class="en">State Management</span></div>
+          <p class="layer-desc">沒有狀態管理的 Agent,就像一個失憶症患者:每一輪對話都重新開始,記不住自己剛做過什麼。駕馭工程必須把三類狀態嚴格切開——「當前任務狀態」(我現在在做哪一步)、「會話中間結果」(剛剛工具回傳了什麼)、「長期使用者記憶」(這個用戶的偏好是什麼)——三者各自存放,各自更新,絕不互相覆蓋。</p>
+          <div class="layer-example">
+            <b>具體場景</b>
+            一個能連續工作 4 小時的程式碼 Agent,中間呼叫了 200 次工具。它必須隨時知道:「我這個任務的目標還是 X、我已經完成了 ABC、我接下來要做 DE、目前最大的卡點是 F」——這四件事如果不顯式管理,模型自己一定會混亂。
+          </div>
+        </div>
+      </div>
+
+      <div class="layer">
+        <div class="layer-num">05</div>
+        <div>
+          <div class="layer-name">評估與觀測<span class="en">Evaluation</span></div>
+          <p class="layer-desc">最容易被忽視、卻最常決定產品死活的一層。沒有獨立的評估機制,Agent 會永遠「自我感覺良好」——它會覺得自己每次都做對,因為它沒有外部標準來告訴它哪裡錯了。這層需要的是:自動化測試、日誌監控、錯誤歸因——讓你能在 100 次運行中,精準指出哪一次跑偏、跑偏在哪一步、為什麼跑偏。</p>
+          <div class="layer-example">
+            <b>具體場景</b>
+            如果你的 Agent 每天處理 1000 個任務,你不可能人工檢查每一個。但你可以設計一個自動評估器,從這 1000 個任務裡隨機抽 50 個,用另一個模型(或固定的規則)去打分,然後把低分案例的詳細日誌推送給你看。沒有這層,問題會悄悄累積到爆炸的那一天。
+          </div>
+        </div>
+      </div>
+
+      <div class="layer">
+        <div class="layer-num">06</div>
+        <div>
+          <div class="layer-name">約束、校驗與恢復<span class="en">Recovery</span></div>
+          <p class="layer-desc">這層是決定系統能不能上線的命脈。在真實世界裡,API 會超時、JSON 會格式錯誤、第三方服務會回 500、網路會斷線——這些不是異常,是常態。駕馭工程必須事先定義:哪些動作絕對不能做(約束)、輸出前後要怎麼檢查(校驗)、出錯後如何切換路徑或回滾狀態(恢復)。</p>
+          <div class="layer-example">
+            <b>具體場景</b>
+            一個交易 Agent 的約束可能是「單筆金額超過 X 萬元就必須人工確認」;校驗是「執行交易前,先 dry-run 一次確認語法正確」;恢復則是「如果交易系統回傳超時,自動切換到備援節點並重試 3 次,3 次後升級到人工」。少了這層,你的 Agent 就只能跑 Demo,永遠上不了生產。
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="advanced-box">
+      <p><strong>給有經驗的人:</strong>這六層不是等價的。經驗告訴我,大部分團隊死在「第五層(評估)」和「第六層(恢復)」上——因為前四層在開發時就會遇到、不得不處理,而後兩層只有上線後才會痛。所以一個成熟的判斷標準是:當你看別人的 Agent 專案,如果他們的 README 沒提到「如何觀測失敗」「如何回滾狀態」,那基本上就是一個 Demo 等級的東西,不論模型用得多新。</p>
+    </div>
+  </section>
+
+  <section>
+    <span class="section-num">PART 03 — 田野筆記</span>
+    <h2 class="section-title">頂尖玩家是<em>怎麼套韁繩</em>的</h2>
+
+    <p class="lead">理論講完,該看實戰。Anthropic 與 OpenAI 之所以能讓 AI 自主寫出百萬行代碼、開發完整遊戲、連續工作數小時不崩潰,靠的不是堆疊更強的模型,而是極致的駕馭工程設計。以下是兩家公司的內部操作,放在一起對照看,特別有意思——他們解的是同樣的問題,但思路完全不同。</p>
+
+    <div class="case-grid">
+
+      <div class="case anthropic">
+        <div class="case-label">CASE A · 系統重啟學派</div>
+        <h3>Anthropic</h3>
+
+        <h4>問題:上下文焦慮</h4>
+        <p>隨著 Agent 對話拉長,模型的注意力會被稀釋。它開始遺忘細節、急於草率收尾、甚至開始重複自己——這在心理學上像是一種「焦慮反應」,在工程上叫做「上下文退化」。</p>
+
+        <h4>多數團隊的解法</h4>
+        <p>「壓縮歷史」(Context Compression)。把前面的對話摘要成幾句話,騰出空間給新內容。聽起來合理,但 Anthropic 發現這治標不治本——摘要會丟失關鍵細節,而且摘要本身也會佔用注意力。</p>
+
+        <h4>Anthropic 的激進解法</h4>
+        <p><strong>Context Reflect</strong>:不要試圖管理舊的對話,而是直接開一個全新的、乾淨的 Agent,把核心狀態以結構化方式交接過去。就像解決記憶體洩漏的最佳方式不是去清理記憶體,而是<em>直接重啟進程</em>。</p>
+
+        <h4>另一個信條:球員與裁判分家</h4>
+        <p>讓模型自己檢查自己的成果,結果一定是過度樂觀。Anthropic 把角色嚴格切開成三個獨立 Agent:<strong>Planner</strong> 拆解需求、<strong>Generator</strong> 編碼實現、<strong>Evaluator</strong> 獨立驗證。重點是,Evaluator 不是抽象審查程式碼,而是真實點擊頁面、檢查互動結果——這是「生產與驗收物理隔離」的工程信條落地。</p>
+      </div>
+
+      <div class="case openai">
+        <div class="case-label">CASE B · 環境設計學派</div>
+        <h3>OpenAI</h3>
+
+        <h4>問題:工程師的角色重新定義</h4>
+        <p>在 Agent 時代,工程師逐漸不用親手寫程式碼——他們的工作變成「設計 Agent 的工作環境」。當 Agent 失敗時,他們學會的第一件事是:不要叫它「更努力一點」,而是去問「環境裡缺了什麼結構性能力」。</p>
+
+        <h4>具體案例:文檔的演化</h4>
+        <p>OpenAI 早期把所有規範塞進一個巨大的 <code>agent.md</code>——定價規則、設計準則、安全限制全部一鍋燴。結果模型被龐大的資訊量壓垮,反而做不好任何一件事。</p>
+
+        <h4>後來的解法</h4>
+        <p>把巨型文檔改成<strong>「目錄頁」</strong>。模型先看目錄,知道有哪些章節;真的需要時才動態索引進入具體的子文檔(定價、設計、安全各自獨立)。注意力資源因此被大幅節約。</p>
+
+        <h4>自動化治理的閉環</h4>
+        <p>OpenAI 讓 Agent 自己跑測試、查 Log、讀錯誤訊息。同時,他們把資深工程師多年累積的 Code Review 經驗寫成系統規則——當 Agent 報錯時,系統不只丟出錯誤訊息,還會帶著「如何修復的建議」一起進入下一輪對話,形成可持續運行的自動治理系統。這讓 Agent 在失敗時不會卡死,而是有方向地恢復。</p>
+      </div>
+
+    </div>
+
+    <div class="advanced-box">
+      <p><strong>兩種學派的本質差異:</strong>Anthropic 像是「分散式系統工程師」的思路——當一個節點壞了,不要修它,直接重啟、用新節點接手。OpenAI 像是「環境設計師」的思路——當員工做不好,不要罵員工,而是去檢查辦公室是不是缺了某個工具。<strong>但兩者的共同點是:他們都不再把希望寄託在「模型本身會變更聰明」上面。</strong>這才是駕馭工程思維的底層信念——模型已經夠聰明了,差的是你給它的環境。</p>
+    </div>
+
+    <div class="pullquote">
+      解決上下文太滿的最佳方式,<br>不是壓縮記憶,而是直接重啟進程。
+      <cite>— Anthropic 的 Context Reflect 哲學</cite>
+    </div>
+  </section>
+
+  <section>
+    <span class="section-num">PART 04 — 使用者視角</span>
+    <h2 class="section-title">那麼,坐在駕駛座的<em>你</em>呢?</h2>
+
+    <p class="lead">如果說駕馭工程是大廠工程師為 Agent 打造的系統工程,那麼對個人使用者而言,同樣的邏輯也成立——只是規模小得多。Gary Chen 把這套思維拆成四層能力,正好可以對應到我們前面講的駕馭工程結構。讀完這一節,你會發現:一個律師、一個寫作者、一個顧問,只要思維對了,他們的個人工作流也能成為一個迷你的駕馭系統。</p>
+
+    <h3 class="sub">第一層 · 意圖精確度:終結通靈式對話</h3>
+
+    <p>大部分人使用 AI 最大的盲點,是期待 AI 能「通靈」。他們在對話框輸入一句「幫我做一份簡報」,然後在一來一回的修改中浪費時間,還覺得自己效率很高——畢竟原本三小時的工作,現在四十分鐘就「搞定」了。</p>
+
+    <p>Gary Chen 講了一個生動的對比:同一個模型、同一天,小明與小王。小明採取典型的「聊天流」——打開 Cloud Code 說「幫我做一份季度回顧的簡報」,然後邊聊邊修,改了 40 分鐘終於有一份勉強能用的東西。小王卻完全不一樣:他桌上只有紙筆,花了 10 分鐘寫下一份完整的<strong>任務規格(Spec)</strong>:這份簡報給誰看?解決什麼問題?幾頁?風格?有什麼禁忌?驗收標準是什麼?寫完後,他把規格丟給 AI,自己去泡咖啡。回來後,只微調兩個地方就完美收工。</p>
+
+    <div class="beginner-box">
+      <p><b>什麼是 Spec?</b>Spec 不是長篇大論的提示詞,而是一份「結構化的任務說明書」。就像產品經理寫給工程師的 PRD,或是律師交辦案件給助理時的工作備忘錄。它包含目標、受眾、限制、期望、驗收標準,把模糊的想法逼成具體的條件。</p>
+      <p>新手最容易犯的錯,就是把寫 Spec 當成「多此一舉」——「我都已經知道我要什麼了,為什麼還要寫下來?」——但事實是,你以為你知道,其實你不知道。寫 Spec 的過程,本身就是逼自己想清楚的過程。</p>
+    </div>
+
+    <p>這兩種工作流揭示了本質的差異:小明把 AI 當「需要反覆指導的助理」,小王把 AI 當「可以獨立工作的 Agent」。在 Agent 時代,真正的成本從來不是模型燒了多少 Token,<strong>而是「人類必須介入調整的時間」</strong>。</p>
+
+    <div class="pullquote">
+      自己都沒想清楚的事情丟給 AI,<br>它也不會替你想清楚。
+      <cite>— Gary Chen</cite>
+    </div>
+
+    <p>Shopify 的 CEO Tobi Lütke 曾經這樣總結:提供背景資訊給 AI,本質上是一種「溝通機率」——你必須把腦中那些「以為不用講對方也懂」的隱含假設,全部攤在陽光下。有趣的是,當你把這項能力練好,你跟人類溝通的效率也會大幅提升。底層邏輯是相通的:把模糊的意識,轉化為清晰、結構化的語言。</p>
+
+    <h3 class="sub">第二層 · 策略性懷疑:防禦四種隱性災難</h3>
+
+    <p>人類在不確定或犯錯時,會展現出結巴、猶豫等心虛特徵。但 AI 完全沒有這種機制,它的輸出永遠流暢、自信、格式漂亮——甚至會「一本正經地講幹話」。這是它最危險的特性:<strong>犯錯時看起來和正確時一模一樣。</strong></p>
+
+    <p>所以泛泛地說「要對 AI 保持懷疑」是廢話,就像告訴攀岩新手「爬的時候要小心」。真正有用的是「策略性懷疑」——你必須知道 AI 最容易在哪些地方摔跤。Gary Chen 歸納了四種最常見的失效模式:</p>
+
+    <div class="failures">
+      <div class="failure">
+        <span class="failure-tag">FAIL 01</span>
+        <h4>Silent Failure 靜默失效</h4>
+        <p>表面上代碼乾淨、邏輯完整,但底層假設是錯的。例如讓 AI 做數據分析,如果原始數據的日期格式混亂或有隱含空值,AI 不會停下來警告你,它會直接產出一份基於錯誤數據的「完美報告」。</p>
+        <div class="defense">
+          <b>防禦策略</b>把注意力放在最上游的「資料清理」步驟。源頭錯了,後面再漂亮都是假的。
+        </div>
+      </div>
+      <div class="failure">
+        <span class="failure-tag">FAIL 02</span>
+        <h4>Spec Drift 規格偏移</h4>
+        <p>在長對話或長任務中,AI 的注意力會隨著 Context 變長而衰退。這就像開車時方向盤偏了一度,起初無感,開了一百公里後已經到了另一個城市。</p>
+        <div class="defense">
+          <b>防禦策略</b>定期開設新 Session,重新載入核心資訊;在長任務中設定「中途檢查點」,強制重新對齊規格。
+        </div>
+      </div>
+      <div class="failure">
+        <span class="failure-tag">FAIL 03</span>
+        <h4>Sycophancy 諂媚迎合</h4>
+        <p>這是最令人發毛的特性。如果你給 AI 一個錯誤的前提,它不會糾正你,而是會基於這個錯誤前提構建一套極具邏輯的論述。Gary Chen 的原話:「兄弟你餵它垃圾,它不會告訴你這是垃圾,它會幫你把垃圾包裝成一個看起來很屌的東西。」</p>
+        <div class="defense">
+          <b>防禦策略</b>結構完整絕不等於前提正確。每次接到漂亮的輸出,先問自己:「我餵給它的前提,確定是對的嗎?」
+        </div>
+      </div>
+      <div class="failure">
+        <span class="failure-tag">FAIL 04</span>
+        <h4>Cascade Failure 級聯失效</h4>
+        <p>在多 Agent 系統中特別致命。Agent A 收集錯數據,Agent B 完美分析了錯數據,Agent C 做出一份漂亮的簡報。每個節點單獨看都沒有崩潰,但最終產出是純粹的垃圾。</p>
+        <div class="defense">
+          <b>防禦策略</b>在 Agent 的交接點必須設定驗證機制(Keep human in the loop)。下游永遠不要無條件信任上游。
+        </div>
+      </div>
+    </div>
+
+    <p>真正的判斷力是建立在你的「護城河」之上的。你必須清楚自己工作流的每一個環節,知道哪裡 AI 容易出錯,並針對性地查核。Gary Chen 還補了一句很狠的話:<strong>「如果 AI 最近沒有讓你驚訝過,你大概率不是在它的能力邊界上工作。」</strong>——也就是說,你已經停留在自己的舒適圈太久了。</p>
+
+    <h3 class="sub">第三層 · 系統設計:從使用者升級為架構師</h3>
+
+    <p>在這個時代,AI 的上下文記憶體已經高達百萬 Token,綽綽有餘——反而是<strong>「人類的 Context 不夠用了」</strong>。我們無法同時應付多個並行的 AI 專案,因為大腦無法承受頻繁的上下文切換。為了解放人類這個瓶頸,你必須為 AI 進行「系統設計」,讓它能在無需人類每一步盯哨的情況下穩定工作。</p>
+
+    <p>三個立即可行的操作:</p>
+
+    <h4 class="mini">① 寫一份 Context 文件</h4>
+    <p>多數人每次打開 AI 都是從零開始——AI 不認識你,不知道你的標準、偏好、踩過什麼坑。這注定產出只能停留在「偶爾好用」的程度。你必須把自己的工作脈絡結構化:你的角色、任務類型、品質標準、踩過的坑。每次對話前先載入這份文件。</p>
+
+    <div class="pullquote">
+      你手動打的 prompt 大概 200 個 token......<br>你寫的字只佔了 0.02%,另外的 99.98% 是系統提示、工具定義、檢索到的文件——<br>這些才是真正決定 AI 產出品質的東西。
+      <cite>— Gary Chen</cite>
+    </div>
+
+    <p>這就是為什麼花同樣月費,有人的產出品質能贏十倍。差別不在模型,而在那 99.98%。</p>
+
+    <h4 class="mini">② 建立 Feedback Loop(回饋迴圈)</h4>
+    <p>你不可能每次都手動檢查輸出——這違反了「解放人類瓶頸」的原則。你應該在工作流中嵌入<strong>自動驗證機制</strong>:寫完程式自動跑測試、寫完報告自動核對 Checklist、產出文件自動檢查格式合規性。讓 AI 處於一個「可自我修正」的閉環中,而不是依賴你來當校對員。</p>
+
+    <h4 class="mini">③ 設定權限與安全邊界</h4>
+    <p>當 AI 開始接觸你的資料和系統,你必須定義它可以自主決定什麼、哪些必須經過人類審核。Anthropic 在開發時就遇過 Agent 試圖一口氣做完所有事而導致崩潰的狀況——他們的解法不是換更強的模型,而是「改系統設計」,把任務拆分為三個階段,交由不同 Agent 處理。</p>
+
+    <div class="beginner-box">
+      <p><b>個人版的系統設計長什麼樣?</b>你不需要工程背景。一份寫好的 Context 文件(說明你是誰、你的工作標準是什麼)+ 一套 SOP 檢查表(每次產出後要對照的清單)+ 幾個固定的 AI 工作流模板——這三樣東西加起來,就是一個完整的個人駕馭系統。重點不是工具多複雜,而是<em>讓你不需要每次都重新思考流程</em>。</p>
+    </div>
+
+    <h3 class="sub">第四層 · 持續校準:沒有終點的技能</h3>
+
+    <p>前三層(意圖、判斷、系統)是「能力」,可以透過學習建立;但第四層是「習慣」與「心態」。傳統職場技能(如 Excel、會計執照)學一次就能用很久,但 AI 不同——它的能力邊界每幾個月就劇烈刷新一次。三個月前你需要手動處理的環節,現在可能已經被完美包辦;而你如果還在用舊流程,就會從「創造價值的人」降級為「冗員」。</p>
+
+    <p>具體該怎麼校準?Gary Chen 給了三個操作:</p>
+
+    <div class="compare">
+      <div>
+        <h5>動作一</h5>
+        <strong>定期測試 AI 邊界</strong>
+        <p>故意丟出模糊、困難、看起來「不可能」的任務,探它現在的極限在哪。今天跑得動的任務,昨天可能還跑不動。</p>
+      </div>
+      <div>
+        <h5>動作二</h5>
+        <strong>新模型重測工作流</strong>
+        <p>每次大版本更新,重新檢視你工作流中需要人工介入的環節——是不是有些可以放手了?把那些已經能自動化的步驟移出你的待辦清單。</p>
+      </div>
+    </div>
+
+    <p>還有第三個——<strong>記錄驚訝時刻</strong>。把 AI 讓你意想不到的表現(無論好壞)都記下來。這些就是你校準認知邊界的信號。當你停止驚訝,代表你已經開始落後。</p>
+  </section>
+
+  <section class="bubble-section">
+    <div class="wrapper" style="padding: 0;">
+      <span class="section-num">PART 05 — 終局思考</span>
+      <h2 class="section-title">站在<em>泡泡的表面</em>上</h2>
+
+      <p class="lead">Gary Chen 提出了一個極具啟發性的視覺隱喻,可能是這支影片裡最值得記住的一段話:把 AI 今天能可靠完成的所有事情,想像成一個正在膨脹的泡泡。你站的地方,就是那層薄薄的膜——人機協作的邊界。</p>
+
+      <svg class="bubble-vis" viewBox="0 0 540 380" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="bubbleGrad" cx="40%" cy="35%" r="65%">
+            <stop offset="0%" stop-color="#c9a961" stop-opacity="0.45"/>
+            <stop offset="60%" stop-color="#d4452a" stop-opacity="0.22"/>
+            <stop offset="100%" stop-color="#1e3a5f" stop-opacity="0.08"/>
+          </radialGradient>
+          <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+            <path d="M0,0 L6,4 L0,8 Z" fill="#c9a961"/>
+          </marker>
+        </defs>
+        <circle cx="270" cy="190" r="175" fill="none" stroke="#c9a961" stroke-width="1" stroke-dasharray="3 6" opacity="0.45"/>
+        <circle cx="270" cy="190" r="135" fill="url(#bubbleGrad)" stroke="#c9a961" stroke-width="2"/>
+        <circle cx="270" cy="190" r="85" fill="none" stroke="#f4f1ea" stroke-width="0.5" stroke-dasharray="2 4" opacity="0.35"/>
+        <text x="270" y="180" text-anchor="middle" fill="#f4f1ea" font-family="'Bricolage Grotesque'" font-size="14" font-weight="700">AI 今天可獨立</text>
+        <text x="270" y="200" text-anchor="middle" fill="#f4f1ea" font-family="'Bricolage Grotesque'" font-size="14" font-weight="700">完成的所有事</text>
+        <text x="270" y="220" text-anchor="middle" fill="#c9a961" font-family="'JetBrains Mono'" font-size="9">(自動化區域)</text>
+        <circle cx="405" cy="190" r="6" fill="#d4452a"/>
+        <line x1="405" y1="190" x2="445" y2="170" stroke="#d4452a" stroke-width="1.5"/>
+        <text x="450" y="168" fill="#f4f1ea" font-family="'JetBrains Mono'" font-size="11">YOU</text>
+        <text x="450" y="182" fill="#c9a961" font-family="'JetBrains Mono'" font-size="9">站在邊界上</text>
+        <path d="M 100 190 L 80 190" stroke="#c9a961" stroke-width="1" marker-end="url(#arr)"/>
+        <path d="M 430 290 L 450 310" stroke="#c9a961" stroke-width="1" marker-end="url(#arr)"/>
+        <path d="M 270 35 L 270 15" stroke="#c9a961" stroke-width="1" marker-end="url(#arr)"/>
+        <path d="M 110 290 L 90 310" stroke="#c9a961" stroke-width="1" marker-end="url(#arr)"/>
+        <text x="270" y="368" text-anchor="middle" fill="#6b6259" font-family="'JetBrains Mono'" font-size="10">↔ 泡泡持續膨脹 · 表面積也持續增大 ↔</text>
+      </svg>
+
+      <p>身為人類,你就站在那層薄膜上,負責指揮、交接、驗證——這就是你的位置。但這個泡泡正在瘋狂變大,三個月前你需要手動介入的工作,現在可能已經被完美包辦。如果你不跟著邊界往外移動,繼續用舊的流程做 AI 已經能做好的事,你就會從「創造價值的人」降級為「冗員」。</p>
+
+      <p>這裡有一個極度反直覺的洞察,值得你停下來想三秒——當泡泡越大,<strong style="color: var(--gold);">表面積也越大</strong>。這意味著:AI 越強大,需要人類判斷的「邊界交接點」反而變得更多,你的「判斷力」也因此變得更值錢。這項處於自動化邊界上的技能,在結構上天然具備「抗淘汰」的屬性——前提是,你必須不斷往外移動,跟著泡泡一起膨脹。</p>
+
+      <div class="advanced-box" style="background: rgba(255,255,255,0.05); border-color: var(--gold);">
+        <p><strong>把這個隱喻和駕馭工程放在一起看:</strong>大廠工程師在做的「駕馭工程」、和個人使用者在做的「站在泡泡邊界上」——其實是同一件事的兩個尺度。前者是在組織層面,設計一整套讓 Agent 能在組織內穩定工作的環境;後者是在個人層面,設計一整套讓 AI 能在你的工作流中穩定產出的環境。兩者的核心動作完全一樣:<strong>定義邊界、設立檢查點、設計恢復機制、持續校準</strong>。</p>
+      </div>
+
+      <p>這正好回到駕馭工程的本質。無論你是大廠工程師在搭建百萬行代碼的 Agent 系統,還是一個律師在用 Claude 處理書狀,你都不再是一個埋頭苦幹的執行者——你是一個架構師,負責設計環境、設立檢查點、定義「什麼叫做完了」。AI 沒有創造新的職場要求,它只是把這些能力的價值<em>無限放大</em>。</p>
+
+      <p>而最稀缺的人,從來不是最會寫程式或寫文案的工匠,<strong>而是擁有強大「世界觀與邏輯架構能力」、能夠清晰定義問題並建立驗證機制的人</strong>。每一次與 AI 的對話,本質上都是對你自身邏輯清晰度的一次嚴格審視——AI 不會替你思考,它只會放大你思考的結果。如果你思考清晰,它會讓你看起來像神;如果你思考混亂,它會讓你的混亂以前所未有的速度暴露在所有人面前。</p>
+    </div>
+  </section>
+
+  <section>
+    <span class="section-num">PART 06 — 行動清單</span>
+    <h2 class="section-title">給<em>2026 年</em>的你的四件事</h2>
+
+    <p class="lead">講了這麼多概念,如果你只能帶走四件事,就是這四件。它們不需要任何工程背景就能做,但每一件都會在 3 個月內顯著改變你和 AI 的協作品質。</p>
+
+    <ol class="takeaways">
+      <li>
+        <strong>停止只調提示詞</strong>
+        當 Agent 任務失敗率高時,別再修辭藻或抱怨模型笨。停下來問三個問題:我的系統有沒有狀態管理?有沒有錯誤恢復?有沒有獨立驗證?問題從來不在「話有沒有講對」,而在「環境有沒有搭好」。把改提示詞的時間,拿來想這三個問題,你會得到十倍的效率提升。
+      </li>
+      <li>
+        <strong>把資訊變成「目錄」,而不是「文檔」</strong>
+        學習 OpenAI 的目錄索引法。不要把所有背景資訊、規範、工具手冊一次性塞給模型——讓資訊按需觸發、漸進式暴露,保護它的注意力。在個人層面,這意味著:寫一份結構化的 Context 文件,把不同類型的知識(角色、規則、案例、模板)分區存放,而不是一份雜亂的萬用提示詞。一份好的 Context 文件,勝過一千次手動提示。
+      </li>
+      <li>
+        <strong>生產者與驗收者必須分家</strong>
+        絕對不要讓寫東西的 AI 自己給自己打分。無論是寫程式、寫文章、寫書狀,都要設計一個獨立的驗收流程——可以是另一個 AI Agent 角色、可以是一份固定的 Checklist、也可以是你自己花 5 分鐘的物理檢查。重點是這個驗收必須與生產流程「物理隔離」,不能讓同一個 AI 在同一輪對話裡既當運動員又當裁判。Anthropic 走過這條路,你不用再走一次。
+      </li>
+      <li>
+        <strong>把失敗當成常態來設計</strong>
+        在真實世界中執行,出錯是必然的——API 會超時、格式會跑掉、AI 會誤解、工具會回傳奇怪的結果。一個成熟的 AI 工作流必須具備完整的閉環:出錯 → 報錯(讓你知道哪裡錯了) → 攜帶修復建議重試(下一輪對話帶著錯誤訊息和修復方向) → 回滾狀態(回到一個已知正確的點重來)。這跟一個成熟的法律事務所必須有完整的內控流程,本質上是同一件事:你不是在預防錯誤,你是在設計「錯誤發生後的優雅處理」。
+      </li>
+    </ol>
+
+    <div class="pullquote">
+      未來最稀缺的不是會寫好程式的工匠,<br>而是能定義問題、設計驗證、建立恢復機制的<em style="color: var(--accent); font-style: italic;">架構師</em>。
+      <cite>— 寫給每一位站在 AI 邊界上的人</cite>
+    </div>
+
+    <p style="text-align: center; color: var(--muted); margin-top: 40px; font-size: 15px;">
+      駕馭工程不是給工程師的專利,而是給每一個想要認真使用 AI 的人的<br>
+      —— 一份重新定義「工作」這件事的邀請函。
+    </p>
+  </section>
+
+  <footer>
+    <div>THE HARNESS REPORT · Vol. 04 · 2026</div>
+    <div class="sources">
+      主要來源 / code 秘密花園《最近爆火的 Harness Engineering 到底是个啥?一期讲透!》<br>
+      延伸對照 / Gary Chen《你還是只會跟 AI 聊天嗎?升級到 AI 原生工作者的四層能力 2026》
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>
